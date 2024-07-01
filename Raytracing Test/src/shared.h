@@ -1,24 +1,65 @@
 #pragma once
-#include <cmath>
-#include <limits>
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/glm.hpp"
+#include "glm/gtx/norm.hpp"
+#include "glm/gtc/random.hpp"
+#include <iostream>
+#include <vector>
 #include <memory>
-#include <cstdlib>
+#include <random>
 
-using std::shared_ptr;
-using std::make_shared;
-using std::sqrt;
+// Constants
 
 const double infinity = std::numeric_limits<double>::infinity();
 const double pi = 3.1415926535897932385;
 
-inline double degrees_to_radians(double degrees) { return degrees * pi / 180.0; }
-inline double random_double() { return rand() / (RAND_MAX + 1.0); }
-inline double random_double(double min, double max) { return min + (max - min) * random_double(); }
-inline int random_int(int min, int max) { return static_cast<int>(random_double(min, max + 1)); }
+// Utility Functions
 
-inline double clamp(double x, double min, double max)
-{
-	if (x < min) return min;
-	if (x > max) return max;
-	return x;
+inline double degrees_to_radians(double degrees) {
+    return degrees * pi / 180.0;
 }
+
+inline double random_double() {
+    static std::uniform_real_distribution<double> distribution(0.0, 1.0);
+    static std::mt19937 generator;
+    return distribution(generator);
+}
+
+inline double random_double(double min, double max) {
+    // Returns a random real in [min,max).
+    return min + (max - min) * random_double();
+}
+
+inline glm::vec3 random() {
+    return glm::vec3(random_double(), random_double(), random_double());
+}
+
+inline glm::vec3 random(double min, double max) {
+    return glm::vec3(random_double(min, max), random_double(min, max), random_double(min, max));
+}
+
+inline glm::vec3 random_in_unit_sphere() {
+    while (true) {
+        auto p = random(-1, 1);
+        if (glm::length2(p) < 1)
+            return p;
+    }
+}
+
+inline glm::vec3 random_unit_vector() {
+    return glm::normalize(random_in_unit_sphere());
+}
+
+inline glm::vec3 random_on_hemisphere(const glm::vec3& normal) {
+    glm::vec3 on_unit_sphere = random_unit_vector();
+    if (glm::dot(on_unit_sphere, normal) > 0.0) // In the same hemisphere as the normal
+        return on_unit_sphere;
+    else
+        return -on_unit_sphere;
+}
+
+// Common Headers
+
+#include "color.h"
+#include "ray.h"
+#include "interval.h"

@@ -86,13 +86,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>src\vendor\SDL\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -101,7 +103,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -110,19 +112,23 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>src\vendor\SDL\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)src\vendor\SDL\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -131,7 +137,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -140,35 +146,103 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)src\vendor\SDL\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Raytracing Test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\aabb.h" />
-    <ClInclude Include="src\aarect.h" />
-    <ClInclude Include="src\box.h" />
-    <ClInclude Include="src\bvh.h" />
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\color.h" />
-    <ClInclude Include="src\constant_medium.h" />
     <ClInclude Include="src\hittable.h" />
     <ClInclude Include="src\hittable_list.h" />
-    <ClInclude Include="src\material.h" />
-    <ClInclude Include="src\moving_sphere.h" />
-    <ClInclude Include="src\onb.h" />
-    <ClInclude Include="src\pdf.h" />
-    <ClInclude Include="src\perlin.h" />
+    <ClInclude Include="src\interval.h" />
     <ClInclude Include="src\ray.h" />
     <ClInclude Include="src\shared.h" />
     <ClInclude Include="src\sphere.h" />
-    <ClInclude Include="src\texture.h" />
-    <ClInclude Include="src\vec3.h" />
+    <ClInclude Include="src\vendor\SDL\include\begin_code.h" />
+    <ClInclude Include="src\vendor\SDL\include\close_code.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_assert.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_atomic.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_audio.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_bits.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_blendmode.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_clipboard.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_config.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_cpuinfo.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_egl.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_endian.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_error.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_events.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_filesystem.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_gamecontroller.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_gesture.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_guid.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_haptic.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_hidapi.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_hints.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_joystick.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_keyboard.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_keycode.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_loadso.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_locale.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_log.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_main.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_messagebox.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_metal.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_misc.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_mouse.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_mutex.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_name.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_opengl.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_opengles.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_opengles2.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_opengles2_gl2.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_opengles2_gl2ext.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_opengles2_gl2platform.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_opengles2_khrplatform.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_opengl_glext.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_pixels.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_platform.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_power.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_quit.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_rect.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_render.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_revision.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_rwops.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_scancode.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_sensor.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_shape.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_stdinc.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_surface.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_system.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_syswm.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_test.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_test_assert.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_test_common.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_test_compare.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_test_crc32.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_test_font.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_test_fuzzer.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_test_harness.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_test_images.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_test_log.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_test_md5.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_test_memory.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_test_random.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_thread.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_timer.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_touch.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_types.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_version.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_video.h" />
+    <ClInclude Include="src\vendor\SDL\include\SDL_vulkan.h" />
     <ClInclude Include="src\vendor\stb_image\stb_image.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="res\texture\earthmap.jpg" />
+    <ClInclude Include="src\vendor\stb\stb_image_write.h" />
+    <ClInclude Include="src\window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

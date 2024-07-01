@@ -1,20 +1,20 @@
 #pragma once
-#include "vec3.h"
+#include "shared.h"
 
-class ray
-{
+class ray {
 public:
-	ray() {}
-	ray(const point3& origin, const vec3& direction, double time = 0.0)
-		: orig(origin), dir(direction), tm(time) {}
+    ray() {}
 
-	point3 origin() const { return orig; }
-	vec3 direction() const { return dir; }
-	double time() const { return tm; }
+    ray(const glm::vec3& origin, const glm::vec3& direction) : orig(origin), dir(direction) {}
 
-	point3 at(double t) const { return orig + t * dir; }
+    const glm::vec3& origin() const { return orig; }
+    const glm::vec3& direction() const { return dir; }
 
-	point3 orig;
-	vec3 dir;
-	double tm;
+    glm::vec3 at(double t) const {
+        return orig + glm::vec3(t) * dir;
+    }
+
+private:
+    glm::vec3 orig;
+    glm::vec3 dir;
 };

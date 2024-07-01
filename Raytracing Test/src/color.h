@@ -1,20 +1,19 @@
 #pragma once
-#include <iostream>
+#include "interval.h"
+#include "shared.h"
 
-#include "vec3.h"
-
-void write_color(std::ostream& out, color pixel_color, int samples_per_pixel)
+inline double linear_to_gamma(double linear_component)
 {
-	auto r = pixel_color.x();
-	auto g = pixel_color.y();
-	auto b = pixel_color.z();
+    if (linear_component > 0)
+        return sqrt(linear_component);
 
-	auto scale = 1.0 / samples_per_pixel;
-	r = sqrt(scale * r);
-	g = sqrt(scale * g);
-	b = sqrt(scale * b);
+    return 0;
+}
 
-	out << static_cast<int>(256 * clamp(r, 0.0, 0.999)) << ' '
-		<< static_cast<int>(256 * clamp(g, 0.0, 0.999)) << ' '
-		<< static_cast<int>(256 * clamp(b, 0.0, 0.999)) << '\n';
+void write_color(std::vector<unsigned char>& image_data, int pixel_index, const glm::vec3& pixel_color)
+{
+    static const interval intensity(0.000, 0.999);
+    image_data[pixel_index + 0] = int(256 * intensity.clamp(linear_to_gamma(pixel_color.x)));
+    image_data[pixel_index + 1] = int(256 * intensity.clamp(linear_to_gamma(pixel_color.y)));
+    image_data[pixel_index + 2] = int(256 * intensity.clamp(linear_to_gamma(pixel_color.z)));
 }

@@ -1,48 +1,101 @@
 #pragma once
 #include "shared.h"
+#include "hittable.h"
 
-class camera
-{
+class camera {
 public:
-	camera(point3 lookfrom, point3 lookat, vec3 vup,
-	double vfov, double aspect_ratio, double aperture,
-	double focus_dist, double _time0 = 0, double _time1 = 0)
-	{
-		auto theta = degrees_to_radians(vfov);
-		auto h = tan(theta / 2);
-		auto viewport_height = 2.0 * h;
-		auto viewport_width = aspect_ratio * viewport_height;
+	double aspect_ratio = 1;  // Ratio of image width over height
+	int    image_width = 100;  // Rendered image width in pixel count
+    int    samples_per_pixel = 10;   // Count of random samples for each pixel
+    int    max_depth = 10;   // Maximum number of ray bounces into scene
 
-		w = unit_vector(lookfrom - lookat);
-		u = unit_vector(cross(vup, w));
-		v = cross(w, u);
+    void render(const hittable& world, std::vector<unsigned char> &image_data) {
+        initialize();
 
-		origin = lookfrom;
-		horizontal = focus_dist * viewport_width * u;
-		vertical = focus_dist * viewport_height * v;
-		lower_left_corner = origin - horizontal / 2 - vertical / 2 - focus_dist * w;
-
-		lens_radius = aperture / 2;
-		time0 = _time0;
-		time1 = _time1;
-	}
-
-	ray get_ray(double s, double t) const
-	{
-		vec3 rd = lens_radius * random_in_unit_disk();
-		vec3 offset = u * rd.x() + v * rd.y();
-
-		return ray(origin + offset,
-			lower_left_corner + s * horizontal + t * vertical - origin - offset,
-			random_double(time0, time1));
-	}
+        for (int j = 0; j < image_height; j++)
+        {
+            std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
+            for (int i = 0; i < image_width; i++)
+            {
+                glm::vec3 pixel_color(0, 0, 0);
+                for (int sample = 0; sample < samples_per_pixel; sample++) {
+                    ray r = get_ray(i, j);
+                    pixel_color += ray_color(r, max_depth, world);
+                }
+                int pixel_index = (j * image_width + i) * 3;
+                write_color(image_data, pixel_index, glm::vec3(pixel_samples_scale) * pixel_color);
+            }
+        }
+        std::clog << "\rDone.                 \n";
+    }
 
 private:
-	point3 origin;
-	point3 lower_left_corner;
-	vec3 horizontal;
-	vec3 vertical;
-	vec3 u, v, w;
-	double lens_radius;
-	double time0, time1;
+	int    image_height;   // Rendered image height
+    double pixel_samples_scale;  // Color scale factor for a sum of pixel samples
+    glm::vec3 center;         // Camera center
+    glm::vec3 pixel00_loc;    // Location of pixel 0, 0
+    glm::vec3   pixel_delta_u;  // Offset to pixel to the right
+    glm::vec3   pixel_delta_v;  // Offset to pixel below
+
+    void initialize() {
+        image_height = int(image_width / aspect_ratio);
+        image_height = (image_height < 1) ? 1 : image_height;
+
+        pixel_samples_scale = 1.0 / samples_per_pixel;
+
+        center = glm::vec3(0, 0, 0);
+
+        // Determine viewport dimensions.
+        auto focal_length = 1.0;
+        auto viewport_height = 2.0;
+        auto viewport_width = viewport_height * (double(image_width) / image_height);
+
+        // Calculate the vectors across the horizontal and down the vertical viewport edges.
+        auto viewport_u = glm::vec3(viewport_width, 0, 0);
+        auto viewport_v = glm::vec3(0, -viewport_height, 0);
+
+        // Calculate the horizontal and vertical delta vectors from pixel to pixel.
+        pixel_delta_u = viewport_u / glm::vec3(image_width);
+        pixel_delta_v = viewport_v / glm::vec3(image_height);
+
+        // Calculate the location of the upper left pixel.
+        auto viewport_upper_left =
+            center - glm::vec3(0, 0, focal_length) - viewport_u / glm::vec3(2) - viewport_v / glm::vec3(2);
+        pixel00_loc = viewport_upper_left + glm::vec3(0.5) * (pixel_delta_u + pixel_delta_v);
+    }
+
+    ray get_ray(int i, int j) const {
+        // Construct a camera ray originating from the origin and directed at randomly sampled
+        // point around the pixel location i, j.
+
+        auto offset = sample_square();
+        auto pixel_sample = pixel00_loc
+            + ((i + offset.x) * pixel_delta_u)
+            + ((j + offset.y) * pixel_delta_v);
+
+        auto ray_origin = center;
+        auto ray_direction = pixel_sample - ray_origin;
+
+        return ray(ray_origin, ray_direction);
+    }
+
+    glm::vec3 sample_square() const {
+        // Returns the vector to a random point in the [-.5,-.5]-[+.5,+.5] unit square.
+        return glm::vec3(random_double() - 0.5, random_double() - 0.5, 0);
+    }
+
+	glm::vec3 ray_color(const ray& r, int depth, const hittable& world) {
+        if (depth <= 0)
+            return glm::vec3(0, 0, 0);
+
+		hit_record rec;
+        if (world.hit(r, interval(0.001, infinity), rec)) {
+            glm::vec3 direction = rec.normal + random_unit_vector();
+            return glm::vec3(0.5) * ray_color(ray(rec.p, direction), depth - 1, world);
+        }
+
+		glm::vec3 unit_direction = glm::normalize(r.direction());
+		auto a = 0.5 * (unit_direction.y + 1.0);
+		return glm::vec3(1.0 - a) * glm::vec3(1.0, 1.0, 1.0) + glm::vec3(a) * glm::vec3(0.5, 0.7, 1.0);
+	}
 };
