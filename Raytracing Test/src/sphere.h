@@ -3,12 +3,14 @@
 
 class sphere : public hittable {
 public:
-    sphere(const glm::vec3& center, double radius) : center(center), radius(fmax(0, radius)) {}
+    sphere(const glm::vec3& center, double radius, std::shared_ptr<material> mat)
+        : center(center), radius(fmax(0, radius)), mat(mat) {}
+
 
     bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
         glm::vec3 oc = center - r.origin();
         auto a = glm::length2(r.direction());
-        auto h = dot(r.direction(), oc);
+        auto h = glm::dot(r.direction(), oc);
         auto c = glm::length2(oc) - radius * radius;
 
         auto discriminant = h * h - a * c;
@@ -29,6 +31,7 @@ public:
         rec.p = r.at(rec.t);
         glm::vec3 outward_normal = (rec.p - center) / glm::vec3(radius);
         rec.set_face_normal(r, outward_normal);
+        rec.mat = mat;
 
         return true;
     }
@@ -36,4 +39,5 @@ public:
 private:
     glm::vec3 center;
     double radius;
+    std::shared_ptr<material> mat;
 };

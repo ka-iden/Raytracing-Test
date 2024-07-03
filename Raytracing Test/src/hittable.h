@@ -1,10 +1,13 @@
 #pragma once
 #include "shared.h"
 
+class material;
+
 class hit_record {
 public:
     glm::vec3 p;
     glm::vec3 normal;
+    std::shared_ptr<material> mat;
     double t;
     bool front_face;
 
